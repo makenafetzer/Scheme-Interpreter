@@ -10,6 +10,75 @@
 ;;; *** Add more of your own here! ***
 ;;; **********************************
 
+(* (+ 100 26) (- 17 1))
+; expect 2016
+
+(/ 22 7)
+; expect 3.142857142857143
+
+(* (+ 1 0)
+       (- 2 1) (* 1 2)
+       (/ 10 1) (- 1.3 1))
+; expect 6.000000000000001
+
+(define (orion_ly celestial_obj_ly)
+  (/ celestial_obj_ly 1344))
+; expect orion_ly
+(define andromeda 2537000)
+; expect andromeda
+(orion_ly andromeda)
+; expect 1887.6488095238096
+
+(lambda (grand scheme of things) (+ grand scheme of things))
+; expect (lambda (grand scheme of things) (+ grand scheme of things))
+((lambda (grand scheme of things) (+ grand scheme of things)) 3.14 42 244 1.3)
+; expect 290.44
+
+(define (pascal x y)
+  (cond ((or (<= x 0) (<= y 0) (< x y )) 0)
+        ((or (= 1 y) (= x y) ) 1)
+        (else (+ (pascal (- x 1) y) (pascal (- x 1) (- y 1))))))
+; expect pascal
+;;;FOUND HERE: http://stackoverflow.com/questions/25096781/tail-recursive-pascal-triangle-in-scheme
+pascal
+; expect (lambda (x y) (cond ((or (<= x 0) (<= y 0) (< x y)) 0) ((or (= 1 y) (= x y)) 1) (else (+ (pascal (- x 1) y) (pascal (- x 1) (- y 1))))))
+(pascal 9 3)
+; expect 28
+
++
+; expect #[+]
+
+(quote makena_is_cool)
+; expect makena_is_cool
+
+'(i love (dogs and . ((cats))))
+; expect (i love (dogs and (cats)))
+
+(begin (display 'sweg) (- 4 5))
+; expect sweg-1
+
+(or 'makena_is_smart (/ 1 0))
+; expect makena_is_smart
+
+(cond (False 'all_work_and_no_play_makes_makena_a_dull_girl))
+; expect
+
+(cond ((and #f (+ 3 3)) 'free_me)
+       ((eq? 10 10) 'youre_a_ten))
+; expect youre_a_ten
+
+(define x 4)
+; expect x
+(define y 6)
+; expect y
+(let ((x 'makena_youre_gonna_be_okay) (y x)) (print x))
+; expect makena_youre_gonna_be_okay
+
+(define youre_funny (mu (x) (lambda (y) (+ x y))))
+; expect youre_funny
+((youre_funny 6) 5)
+; expect 11
+
 ;;; These are examples from several sections of "The Structure
 ;;; and Interpretation of Computer Programs" by Abelson and Sussman.
 
@@ -105,7 +174,6 @@ circumference
 (f 5)
 ; expect 136
 
-(exit)
 ;;; 1.1.6
 
 (define (abs x)

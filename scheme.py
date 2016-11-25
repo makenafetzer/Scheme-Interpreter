@@ -32,9 +32,8 @@ def scheme_eval(expr, env, _=None): # Optional third argument is ignored
     else:
         # BEGIN PROBLEM 5
         operator = scheme_eval(first, env)
-        if not scheme_procedurep(operator): #checks if it's really an operator
-            raise SchemeError ("'operator' is not a valid operator")
-        #need to deal with nested exprs
+        if not scheme_procedurep(operator): #checks if its really an operator
+            raise SchemeError ("'operator' is not operator")
         operands = rest.map(lambda arg: scheme_eval(arg, env)) #simplify everything
         return scheme_apply(operator, operands, env)
         # END PROBLEM 5
@@ -57,7 +56,7 @@ def eval_all(expressions, env):
     while expressions.second != nil:
         scheme_eval(expressions.first, env)
         expressions = expressions.second
-    return scheme_eval(expressions.first, env)
+    return scheme_eval(expressions.first, env, True)
     # END PROBLEM 8
 
 ################
@@ -222,7 +221,7 @@ def do_define_form(expressions, env):
         check_form(expressions, 2, 2)
         # BEGIN PROBLEM 6
         rest = scheme_eval(expressions.second.first, env)
-        env.define(target, rest) #in parenthesis when no supposed to be
+        env.define(target, rest) 
         return target
         # END PROBLEM 6
     elif isinstance(target, Pair) and scheme_symbolp(target.first):
@@ -262,9 +261,9 @@ def do_if_form(expressions, env):
     """Evaluate an if form."""
     check_form(expressions, 2, 3)
     if scheme_truep(scheme_eval(expressions.first, env)):
-        return scheme_eval(expressions.second.first, env)
+        return scheme_eval(expressions.second.first, env, True)
     elif len(expressions) == 3:
-        return scheme_eval(expressions.second.second.first, env)
+        return scheme_eval(expressions.second.second.first, env, True)
 
 def do_and_form(expressions, env):
     """Evaluate a short-circuited and form."""
@@ -276,7 +275,7 @@ def do_and_form(expressions, env):
             return False
         else:
             expressions = expressions.second
-    return scheme_eval(expressions.first, env)
+    return scheme_eval(expressions.first, env, True)
     # END PROBLEM 13
 
 def do_or_form(expressions, env):
@@ -284,12 +283,12 @@ def do_or_form(expressions, env):
     # BEGIN PROBLEM 13
     if expressions == nil:
         return False
-    while expressions != nil:
+    while expressions.second != nil:
         if scheme_truep(scheme_eval(expressions.first, env)):
             return scheme_eval(expressions.first, env)
         else:
             expressions = expressions.second
-    return False
+    return scheme_eval(expressions.first, env, True)
     # END PROBLEM 13
 
 def do_cond_form(expressions, env):
@@ -501,10 +500,9 @@ def scheme_optimized_eval(expr, env, tail=False):
         return env.lookup(expr)
     elif self_evaluating(expr):
         return expr
-
     if tail:
         # BEGIN Extra Credit
-        "*** REPLACE THIS LINE ***"
+        return Thunk(expr, env)
         # END Extra Credit
     else:
         result = Thunk(expr, env)
@@ -519,14 +517,16 @@ def scheme_optimized_eval(expr, env, tail=False):
             result = SPECIAL_FORMS[first](rest, env)
         else:
             # BEGIN Extra Credit
-            "*** REPLACE THIS LINE ***"
+            operator = scheme_optimized_eval(first, env)
+            operands = rest.map(lambda arg: scheme_optimized_eval(arg, env))
+            result = scheme_apply(operator, operands, env)
             # END Extra Credit
     return result
 
 ################################################################
 # Uncomment the following line to apply tail call optimization #
 ################################################################
-# scheme_eval = scheme_optimized_eval
+scheme_eval = scheme_optimized_eval
 
 
 ################
